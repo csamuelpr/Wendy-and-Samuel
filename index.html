@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>🌻 Para ti 🌻</title>
+<style>
+  :root{
+    --bg1:#1a0f23; --bg2:#2a1b3a;
+    --title:#ffe76b; --glow:#ffe98abb;
+    --petal-1:#ffea00; --petal-2:#ffd000; --petal-3:#ffb300;
+    --center-1:#5a3816; --center-2:#2b1a0b;
+    --stem:#2f8a3a; --stem-d:#146430;
+    --heart:#ff6fa0; --star:#fffde7;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  body{background: radial-gradient(1300px 800px at 50% 20%, var(--bg2), var(--bg1) 60%); color:#fff; overflow:hidden}
+
+  /* Intro (mensaje) */
+  .intro{
+    position:fixed; inset:0; display:grid; place-items:center;
+    text-align:center; padding:24px; z-index:5;
+    background: radial-gradient(1300px 800px at 50% 20%, var(--bg2), var(--bg1) 60%);
+    animation:intro-hide 1s ease forwards; animation-delay:6s;
+  }
+  @keyframes intro-hide{to{opacity:0;visibility:hidden}}
+  .intro h1{margin:0 0 10px; font-weight:800; color:var(--title); text-shadow:0 0 12px var(--glow)}
+  .intro p{margin:.4rem 0; font-size:clamp(18px,2.6vw,26px); line-height:1.5}
+
+  /* Escena */
+  .scene{
+    position:relative; width:100%; height:100%; text-align:center;
+    opacity:0; animation:show 1.1s ease forwards; animation-delay:6.1s;
+  }
+  @keyframes show{to{opacity:1}}
+  .title{margin-top:24px; font-weight:800; color:var(--title); text-shadow:0 0 10px var(--glow); font-size:2rem}
+  .subtitle{margin-top:6px; font-size:1.05rem; color:#fff9}
+
+  /* Corazón (más redondeado y punta un poco más abajo) */
+  .heart{
+    position:absolute; left:50%; bottom:200px; transform:translateX(-50%);
+    width:min(86vw, 560px); height:min(68vh, 480px);
+    display:flex; flex-wrap:wrap; justify-content:center; align-content:center;
+    gap:14px 18px; padding:20px;
+    clip-path: polygon(
+      /* parte inferior (punta más abajo) */
+      50% 104%,
+      /* lado derecho subiendo */
+      70% 86%, 82% 74%, 90% 62%, 94% 50%,
+      95% 42%, 94% 34%,
+      /* lóbulo derecho redondeado */
+      90% 26%, 83% 20%, 75% 17%, 67% 17%,
+      60% 19%, 55% 23%, 52% 27%,
+      /* depresión superior suave */
+      50% 30%,
+      /* lóbulo izquierdo redondeado (espejo) */
+      48% 27%, 45% 23%, 40% 19%, 33% 17%,
+      25% 17%, 17% 20%, 10% 26%,
+      6% 34%, 5% 42%, 6% 50%,
+      10% 62%, 18% 74%, 30% 86%
+    );
+    animation:float 6s ease-in-out infinite;
+  }
+  @keyframes float{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-8px)}}
+
+  /* Girasoles */
+  .sunflower{
+    position:relative; width:92px; height:92px;
+    filter: drop-shadow(0 6px 12px #0007);
+    animation:sway 5.2s ease-in-out infinite; transform-origin:50% 100%;
+  }
+  .sunflower:nth-child(odd){animation-duration:5.8s}
+  @keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2.6deg)}}
+
+  .petals{position:absolute; inset:0}
+  .petals span{
+    position:absolute; left:50%; top:50%;
+    width:52px; height:25px; transform-origin:0% 50%;
+    background:
+      radial-gradient(120% 140% at 10% 50%, #fff8 0 25%, #0000 26%),
+      linear-gradient(90deg, var(--petal-3), var(--petal-2) 50%, var(--petal-1));
+    border-radius:60px;
+    transform: rotate(calc(var(--i)*30deg)) translateX(14px);
+    animation:bloom .8s ease-out both; animation-delay: calc(var(--i)*.05s);
+  }
+  @keyframes bloom{
+    0%{opacity:0; transform:rotate(calc(var(--i)*30deg)) translateX(14px) scale(.25)}
+    100%{opacity:1; transform:rotate(calc(var(--i)*30deg)) translateX(14px) scale(1)}
+  }
+
+  .center{
+    position:absolute; width:44px; height:44px; border-radius:50%;
+    top:50%; left:50%; transform:translate(-50%,-50%);
+    background:
+      radial-gradient(circle at 30% 30%, #0000 0 58%, #0008 59% 64%, #0000 65%),
+      radial-gradient(circle at 50% 50%, var(--center-1) 0 62%, var(--center-2) 63%);
+    box-shadow: inset 0 0 14px #0008; z-index:2;
+  }
+
+  .stem{
+    position:absolute; left:50%; bottom:-72px; transform:translateX(-50%);
+    width:6px; height:85px; background:linear-gradient(#2f8a3a, var(--stem-d)); border-radius:4px;
+  }
+
+  /* Brillitos: corazones y estrellas flotando */
+  .sparkles{position:absolute; inset:0; pointer-events:none}
+  .sparkles span{
+    position:absolute; font-size:clamp(16px, 2.4vw, 24px);
+    opacity:.9; filter:drop-shadow(0 0 6px #fff7);
+    animation: drift var(--t,10s) linear infinite;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .sparkles .h{ color:var(--heart) }
+  .sparkles .s{ color:var(--star) }
+  @keyframes drift{
+    0%  { transform: translate(var(--x), calc(var(--y) + 6px)) scale(1);   opacity:.0 }
+    10% { opacity:1 }
+    50% { transform: translate(calc(var(--x) + 6px), calc(var(--y) - 40px)) scale(1.08) }
+    100%{ transform: translate(calc(var(--x) - 6px), calc(var(--y) - 80px)) scale(1.15); opacity:0 }
+  }
+
+  /* Suelo difuminado */
+  .ground{
+    position:absolute; left:0; right:0; bottom:-80px; height:300px;
+    background:
+      radial-gradient(500px 160px at 50% -10px, #0000, #0006 60%),
+      radial-gradient(1000px 220px at 50% 0px, #0000, #000c 70%),
+      radial-gradient(1300px 300px at 50% 40px, #0000, #000f 70%);
+    pointer-events:none;
+  }
+
+  /* Responsive básico */
+  @media (max-width:480px){
+    .heart{width:92vw; height:58vh; bottom:170px; gap:10px 12px}
+    .sunflower{width:78px; height:78px}
+    .petals span{width:44px; height:22px; transform: rotate(calc(var(--i)*30deg)) translateX(12px)}
+    .center{width:38px; height:38px}
+    .stem{height:70px; bottom:-60px}
+  }
+</style>
+</head>
+<body>
+
+  <!-- Intro -->
+  <section class="intro">
+    <div>
+      <h1>🌻 Para ti 🌻</h1>
+      <p>Te amo mucho mi niña preciosa 💛</p>
+      <p>Aunque no te pueda regalar flores amarillas en persona,</p>
+      <p>te envío estas flores para que sepas que siempre pienso en ti</p>
+      <p>y que te amo muchísimo ✨</p>
+    </div>
+  </section>
+
+  <!-- Escena -->
+  <section class="scene">
+    <h2 class="title">🌻 Para ti 🌻</h2>
+    <p class="subtitle">Con todo mi corazón — Samuel</p>
+
+    <!-- Corazón relleno de girasoles -->
+    <div class="heart" id="heart">
+      <!-- Agrega o quita girasoles para rellenar más -->
+      <!-- Aquí dejo 28 como base -->
+      <!-- Repite este bloque para añadir más -->
+      <!-- 1..28 -->
+      <!-- (Para abreviar, pongo 14 y puedes duplicarlos) -->
+      <!-- 1 -->
+      <div class="sunflower"><div class="petals">
+        <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+        <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+        <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+        <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+      </div><div class="center"></div><div class="stem"></div></div>
+      <!-- 2 -->
+      <div class="sunflower"><div class="petals">
+        <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+        <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+        <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+        <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+      </div><div class="center"></div><div class="stem"></div></div>
+      <!-- 3 -->
+      <div class="sunflower"><div class="petals">
+        <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+        <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+        <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+        <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+      </div><div class="center"></div><div class="stem"></div></div>
+      <!-- 4 -->
+      <div class="sunflower"><div class="petals">
+        <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+        <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+        <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+        <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+      </div><div class="center"></div><div class="stem"></div></div>
+      <!-- 5 -->
+      <div class="sunflower"><div class="petals">
+        <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+        <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+        <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+        <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+      </div><div class="center"></div><div class="stem"></div></div>
+      <!-- 6 -->
+      <div class="sunflower"><div class="petals">
+        <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+        <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+        <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+        <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+      </div><div class="center"></div><div class="stem"></div></div>
+      <!-- 7 -->
+      <div class="sunflower"><div class="petals">
+        <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+        <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+        <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+        <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+      </div><div class="center"></div><div class="stem"></div></div>
+      <!-- 8 -->
+      <div class="sunflower"><div class="petals">
+        <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+        <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+        <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+        <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+      </div><div class="center"></div><div class="stem"></div></div>
+      <!-- 9 -->
+      <div class="sunflower"><div class="petals">
+        <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+        <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+        <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+        <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+      </div><div class="center"></div><div class="stem"></div></div>
+      <!-- 10 -->
+      <div class="sunflower"><div class="petals">
+        <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+        <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+        <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+        <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+      </div><div class="center"></div><div class="stem"></div></div>
+      <!-- 11 -->
+      <div class="sunflower"><div class="petals">
+        <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+        <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+        <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+        <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+      </div><div class="center"></div><div class="stem"></div></div>
+      <!-- 12 -->
+      <div class="sunflower"><div class="petals">
+        <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+        <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+        <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+        <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+      </div><div class="center"></div><div class="stem"></div></div>
+      <!-- 13 -->
+      <div class="sunflower"><div class="petals">
+        <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+        <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+        <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+        <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+      </div><div class="center"></div><div class="stem"></div></div>
+      <!-- 14 -->
+      <div class="sunflower"><div class="petals">
+        <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+        <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+        <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+        <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+      </div><div class="center"></div><div class="stem"></div></div>
+
+      <!-- duplica desde el #1 al #14 para llegar a 28 o más -->
+    </div>
+
+    <!-- Brillitos flotando alrededor -->
+    <div class="sparkles" aria-hidden="true">
+      <!-- Posiciones relativas en % de la ventana -->
+      <!-- corazones -->
+      <span class="h" style="--x:15vw;--y:65vh;--t:9s">💖</span>
+      <span class="h" style="--x:80vw;--y:60vh;--t:10.5s">💗</span>
+      <span class="h" style="--x:12vw;--y:40vh;--t:11s">💛</span>
+      <span class="h" style="--x:85vw;--y:42vh;--t:8.5s">💘</span>
+      <span class="h" style="--x:8vw;--y:52vh;--t:12s">💝</span>
+        <span class="h" style="--x:15vw;--y:20vh;--t:9s">💖</span>
+      <span class="h" style="--x:80vw;--y:30vh;--t:10.5s">💗</span>
+      <span class="h" style="--x:12vw;--y:20vh;--t:11s">💛</span>
+      <span class="h" style="--x:85vw;--y:21vh;--t:8.5s">💘</span>
+      <span class="h" style="--x:8vw;--y:26vh;--t:12s">💝</span>
+            <span class="h" style="--x:45vw;--y:65vh;--t:9s">💖</span>
+      <span class="h" style="--x:125vw;--y:60vh;--t:10.5s">💗</span>
+      <span class="h" style="--x:24vw;--y:40vh;--t:11s">💛</span>
+      <span class="h" style="--x:125vw;--y:42vh;--t:8.5s">💘</span>
+      <span class="h" style="--x:30vw;--y:52vh;--t:12s">💝</span>
+        <span class="h" style="--x:30vw;--y:20vh;--t:9s">💖</span>
+      <span class="h" style="--x:125vw;--y:30vh;--t:10.5s">💗</span>
+      <span class="h" style="--x:25vw;--y:20vh;--t:11s">💛</span>
+      <span class="h" style="--x:120vw;--y:21vh;--t:8.5s">💘</span>
+      <span class="h" style="--x:30vw;--y:26vh;--t:12s">💝</span>
+              <span class="h" style="--x:-15vw;--y:65vh;--t:9s">💖</span>
+      <span class="h" style="--x:-80vw;--y:60vh;--t:10.5s">💗</span>
+      <span class="h" style="--x:-12vw;--y:40vh;--t:11s">💛</span>
+      <span class="h" style="--x:-85vw;--y:42vh;--t:8.5s">💘</span>
+      <span class="h" style="--x:-8vw;--y:52vh;--t:12s">💝</span>
+        <span class="h" style="--x:-15vw;--y:20vh;--t:9s">💖</span>
+      <span class="h" style="--x:-80vw;--y:30vh;--t:10.5s">💗</span>
+      <span class="h" style="--x:-12vw;--y:20vh;--t:11s">💛</span>
+      <span class="h" style="--x:-85vw;--y:21vh;--t:8.5s">💘</span>
+      <span class="h" style="--x:-8vw;--y:26vh;--t:12s">💝</span>
+            <span class="h" style="--x:-45vw;--y:65vh;--t:9s">💖</span>
+      <span class="h" style="--x:-125vw;--y:60vh;--t:10.5s">💗</span>
+      <span class="h" style="--x:-24vw;--y:40vh;--t:11s">💛</span>
+      <span class="h" style="--x:-125vw;--y:42vh;--t:8.5s">💘</span>
+      <span class="h" style="--x:-30vw;--y:52vh;--t:12s">💝</span>
+        <span class="h" style="--x:-30vw;--y:20vh;--t:9s">💖</span>
+      <span class="h" style="--x:-125vw;--y:30vh;--t:10.5s">💗</span>
+      <span class="h" style="--x:-25vw;--y:20vh;--t:11s">💛</span>
+      <span class="h" style="--x:-120vw;--y:21vh;--t:8.5s">💘</span>
+      <span class="h" style="--x:-30vw;--y:26vh;--t:12s">💝</span>
+      <!-- estrellas -->
+      <span class="s" style="--x:22vw;--y:70vh;--t:7.8s">✦</span>
+      <span class="s" style="--x:75vw;--y:72vh;--t:9.6s">✧</span>
+      <span class="s" style="--x:18vw;--y:48vh;--t:8.2s">✦</span>
+      <span class="s" style="--x:88vw;--y:50vh;--t:10.8s">✧</span>
+      <span class="s" style="--x:50vw;--y:76vh;--t:9.2s">✦</span>
+       <span class="s" style="--x:22vw;--y:35vh;--t:7.8s">✦</span>
+      <span class="s" style="--x:75vw;--y:36vh;--t:9.6s">✧</span>
+      <span class="s" style="--x:18vw;--y:29vh;--t:8.2s">✦</span>
+      <span class="s" style="--x:88vw;--y:25vh;--t:10.8s">✧</span>
+      <span class="s" style="--x:50vw;--y:28vh;--t:9.2s">✦</span>
+            <span class="s" style="--x:44vw;--y:70vh;--t:7.8s">✦</span>
+      <span class="s" style="--x:150vw;--y:72vh;--t:9.6s">✧</span>
+      <span class="s" style="--x:36vw;--y:48vh;--t:8.2s">✦</span>
+      <span class="s" style="--x:172vw;--y:50vh;--t:10.8s">✧</span>
+      <span class="s" style="--x:100vw;--y:76vh;--t:9.2s">✦</span>
+       <span class="s" style="--x:44vw;--y:35vh;--t:7.8s">✦</span>
+      <span class="s" style="--x:150vw;--y:36vh;--t:9.6s">✧</span>
+      <span class="s" style="--x:36vw;--y:29vh;--t:8.2s">✦</span>
+      <span class="s" style="--x:172vw;--y:25vh;--t:10.8s">✧</span>
+      <span class="s" style="--x:100vw;--y:28vh;--t:9.2s">✦</span>
+
+            <span class="s" style="--x:-22vw;--y:70vh;--t:7.8s">✦</span>
+      <span class="s" style="--x:-75vw;--y:72vh;--t:9.6s">✧</span>
+      <span class="s" style="--x:-18vw;--y:48vh;--t:8.2s">✦</span>
+      <span class="s" style="--x:-88vw;--y:50vh;--t:10.8s">✧</span>
+      <span class="s" style="--x:-50vw;--y:76vh;--t:9.2s">✦</span>
+       <span class="s" style="--x:-22vw;--y:35vh;--t:7.8s">✦</span>
+      <span class="s" style="--x:-75vw;--y:36vh;--t:9.6s">✧</span>
+      <span class="s" style="--x:-18vw;--y:29vh;--t:8.2s">✦</span>
+      <span class="s" style="--x:-88vw;--y:25vh;--t:10.8s">✧</span>
+      <span class="s" style="--x:-50vw;--y:28vh;--t:9.2s">✦</span>
+            <span class="s" style="--x:-44vw;--y:70vh;--t:7.8s">✦</span>
+      <span class="s" style="--x:-150vw;--y:72vh;--t:9.6s">✧</span>
+      <span class="s" style="--x:-36vw;--y:48vh;--t:8.2s">✦</span>
+      <span class="s" style="--x:-172vw;--y:50vh;--t:10.8s">✧</span>
+      <span class="s" style="--x:-100vw;--y:76vh;--t:9.2s">✦</span>
+       <span class="s" style="--x:-44vw;--y:35vh;--t:7.8s">✦</span>
+      <span class="s" style="--x:-150vw;--y:36vh;--t:9.6s">✧</span>
+      <span class="s" style="--x:-36vw;--y:29vh;--t:8.2s">✦</span>
+      <span class="s" style="--x:-172vw;--y:25vh;--t:10.8s">✧</span>
+      <span class="s" style="--x:-100vw;--y:28vh;--t:9.2s">✦</span>
+    </div>
+
+    <div class="ground" aria-hidden="true"></div>
+  </section>
+</body>
+</html>
